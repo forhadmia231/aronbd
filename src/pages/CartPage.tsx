@@ -41,7 +41,7 @@ const CartPage = () => {
                       {product.name}
                     </h3>
                   </Link>
-                  <p className="text-sm text-muted-foreground font-body capitalize">{product.category}</p>
+                  <p className="text-sm text-muted-foreground font-body capitalize">{product.category_name || ""}</p>
                   <p className="font-display font-bold mt-1">৳{product.price.toLocaleString()}</p>
 
                   <div className="flex items-center justify-between mt-2">

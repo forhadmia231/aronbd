@@ -1,20 +1,45 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn, signUp, user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  if (user) {
+    navigate("/", { replace: true });
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.info("Authentication will be available once Lovable Cloud is enabled.");
+    setLoading(true);
+    try {
+      if (isLogin) {
+        const { error } = await signIn(email, password);
+        if (error) throw error;
+        toast.success("Welcome back!");
+        navigate("/");
+      } else {
+        const { error } = await signUp(email, password, name);
+        if (error) throw error;
+        toast.success("Account created! Check your email to verify.");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,11 +65,11 @@ const LoginPage = () => {
           </div>
           <div>
             <Label className="font-body text-sm">Password</Label>
-            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="font-body mt-1" required />
+            <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="font-body mt-1" required minLength={6} />
           </div>
 
-          <Button type="submit" className="w-full font-body" size="lg">
-            {isLogin ? "Sign In" : "Create Account"}
+          <Button type="submit" className="w-full font-body" size="lg" disabled={loading}>
+            {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
           </Button>
         </form>
 

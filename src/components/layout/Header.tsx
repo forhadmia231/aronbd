@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Search, User, Menu, X } from "lucide-react";
+import { ShoppingCart, Search, User, Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 
 const navLinks = [
@@ -14,6 +15,7 @@ const navLinks = [
 
 const Header = () => {
   const { totalItems } = useCart();
+  const { user, signOut } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -57,11 +59,17 @@ const Header = () => {
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Search className="h-4 w-4" />
           </Button>
-          <Link to="/login">
-            <Button variant="ghost" size="icon">
-              <User className="h-4 w-4" />
+          {user ? (
+            <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sign out">
+              <LogOut className="h-4 w-4" />
             </Button>
-          </Link>
+          ) : (
+            <Link to="/login">
+              <Button variant="ghost" size="icon">
+                <User className="h-4 w-4" />
+              </Button>
+            </Link>
+          )}
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-4 w-4" />

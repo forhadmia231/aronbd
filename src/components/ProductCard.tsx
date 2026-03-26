@@ -12,8 +12,8 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
 
-  const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+  const discount = product.original_price
+    ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
     : 0;
 
   return (
@@ -21,7 +21,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <Link to={`/products/${product.id}`} className="block">
         <div className="aspect-square overflow-hidden bg-muted relative">
           <img
-            src={product.image}
+            src={product.image || "/placeholder.svg"}
             alt={product.name}
             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
@@ -31,7 +31,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               -{discount}%
             </Badge>
           )}
-          {!product.inStock && (
+          {!product.in_stock && (
             <div className="absolute inset-0 bg-background/60 flex items-center justify-center">
               <span className="text-sm font-semibold text-foreground">Out of Stock</span>
             </div>
@@ -41,7 +41,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
       <div className="p-4">
         <p className="text-[11px] text-muted-foreground uppercase tracking-wider font-body mb-1">
-          {product.category}
+          {product.category_name || ""}
         </p>
         <Link to={`/products/${product.id}`}>
           <h3 className="font-body font-medium text-sm leading-tight line-clamp-2 hover:text-muted-foreground transition-colors">
@@ -52,16 +52,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex items-center gap-1 mt-2">
           <Star className="h-3 w-3 fill-foreground text-foreground" />
           <span className="text-xs font-body text-muted-foreground">
-            {product.rating} ({product.reviewCount})
+            {product.rating} ({product.review_count})
           </span>
         </div>
 
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-baseline gap-2">
             <span className="font-display font-bold text-base">৳{product.price.toLocaleString()}</span>
-            {product.originalPrice && (
+            {product.original_price && (
               <span className="text-xs text-muted-foreground line-through">
-                ৳{product.originalPrice.toLocaleString()}
+                ৳{product.original_price.toLocaleString()}
               </span>
             )}
           </div>
@@ -72,9 +72,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             className="h-8 w-8"
             onClick={(e) => {
               e.preventDefault();
-              if (product.inStock) addToCart(product);
+              if (product.in_stock) addToCart(product);
             }}
-            disabled={!product.inStock}
+            disabled={!product.in_stock}
           >
             <ShoppingCart className="h-3.5 w-3.5" />
           </Button>
