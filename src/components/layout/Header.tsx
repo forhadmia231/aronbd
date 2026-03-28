@@ -60,9 +60,16 @@ const Header = () => {
             <Search className="h-4 w-4" />
           </Button>
           {user ? (
-            <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sign out">
-              <LogOut className="h-4 w-4" />
-            </Button>
+            <>
+              <Link to="/admin">
+                <Button variant="ghost" size="sm" className="hidden md:inline-flex text-xs">
+                  Admin
+                </Button>
+              </Link>
+              <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sign out">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </>
           ) : (
             <Link to="/login">
               <Button variant="ghost" size="icon">
