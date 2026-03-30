@@ -2,15 +2,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "stripe">("cod");
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -22,12 +26,62 @@ const CheckoutPage = () => {
   const shipping = totalPrice >= 3000 ? 0 : 100;
   const total = totalPrice + shipping;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.fullName || !formData.phone || !formData.address || !formData.city) {
       toast.error("Please fill in all required fields");
       return;
     }
+
+    if (!user) {
+      toast.error("Please log in to place an order");
+      navigate("/login");
+      return;
+    }
+
+    setSubmitting(true);
+
+    // Insert order into database
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        user_id: user.id,
+        shipping_full_name: formData.fullName,
+        shipping_phone: formData.phone,
+        shipping_address: formData.address,
+        shipping_city: formData.city,
+        shipping_postal_code: formData.postalCode || null,
+        payment_method: paymentMethod,
+        total,
+        status: "pending",
+      })
+      .select()
+      .single();
+
+    if (orderError) {
+      toast.error("Failed to place order: " + orderError.message);
+      setSubmitting(false);
+      return;
+    }
+
+    // Insert order items
+    const orderItems = items.map(({ product, quantity }) => ({
+      order_id: order.id,
+      product_id: product.id,
+      quantity,
+      price: product.price,
+    }));
+
+    const { error: itemsError } = await supabase
+      .from("order_items")
+      .insert(orderItems);
+
+    if (itemsError) {
+      toast.error("Order created but failed to save items: " + itemsError.message);
+      setSubmitting(false);
+      return;
+    }
+
     toast.success("Order placed successfully! Thank you for shopping with us.");
     clearCart();
     navigate("/");
@@ -42,6 +96,12 @@ const CheckoutPage = () => {
     <Layout>
       <div className="container py-8 max-w-4xl">
         <h1 className="font-display text-2xl md:text-3xl font-bold mb-8">Checkout</h1>
+
+        {!user && (
+          <div className="bg-accent border rounded-lg p-4 mb-6 text-sm font-body">
+            Please <a href="/login" className="font-semibold underline">log in</a> to place an order.
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-2 gap-8">
@@ -164,8 +224,8 @@ const CheckoutPage = () => {
                   <span className="font-display">৳{total.toLocaleString()}</span>
                 </div>
               </div>
-              <Button type="submit" className="w-full mt-6 font-body" size="lg">
-                Place Order
+              <Button type="submit" className="w-full mt-6 font-body" size="lg" disabled={submitting || !user}>
+                {submitting ? "Placing Order..." : "Place Order"}
               </Button>
             </div>
           </div>

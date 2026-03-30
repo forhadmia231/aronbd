@@ -3,6 +3,7 @@ import { ShoppingCart, User, Menu, X, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
+import { useSiteSettings } from "@/hooks/useAdmin";
 import { useState } from "react";
 
 const navLinks = [
@@ -16,10 +17,18 @@ const navLinks = [
 const Header = () => {
   const { totalItems } = useCart();
   const { user, signOut } = useAuth();
+  const { data: settings } = useSiteSettings();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const headerBg = settings?.header_bg_color
+    ? { backgroundColor: `hsl(${settings.header_bg_color})` }
+    : {};
+
+  const logoText = settings?.logo_text || "aronbd.com";
+  const logoUrl = settings?.header_logo_url;
+
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b">
+    <header className="sticky top-0 z-50 backdrop-blur border-b" style={headerBg}>
       {/* Top bar */}
       <div className="bg-primary text-primary-foreground text-xs py-1.5 text-center font-body tracking-wide">
         Free shipping on orders over ৳3,000 | Use code <span className="font-semibold">ARON10</span> for 10% off
@@ -37,8 +46,14 @@ const Header = () => {
         </Button>
 
         {/* Logo */}
-        <Link to="/" className="font-display text-xl md:text-2xl font-bold tracking-tight">
-          aron<span className="text-muted-foreground font-light">bd</span>.com
+        <Link to="/" className="flex items-center gap-2">
+          {logoUrl ? (
+            <img src={logoUrl} alt={logoText} className="h-8 md:h-10 object-contain" />
+          ) : (
+            <span className="font-display text-xl md:text-2xl font-bold tracking-tight">
+              aron<span className="text-muted-foreground font-light">bd</span>.com
+            </span>
+          )}
         </Link>
 
         {/* Desktop nav */}
