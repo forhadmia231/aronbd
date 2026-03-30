@@ -4,7 +4,8 @@ import Layout from "@/components/layout/Layout";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { Star, Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Star, Minus, Plus, ShoppingCart, ArrowLeft, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "@/components/ProductCard";
 
 const ProductDetailPage = () => {
