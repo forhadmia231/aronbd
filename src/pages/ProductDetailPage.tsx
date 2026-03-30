@@ -107,10 +107,13 @@ const ProductDetailPage = () => {
                 <span className="w-12 text-center font-body font-medium">{quantity}</span>
                 <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
-              <Button size="lg" className="flex-1 gap-2 font-body" disabled={!product.in_stock} onClick={() => addToCart(product, quantity)}>
+              <Button size="lg" className="flex-1 gap-2 font-body" variant="outline" disabled={!product.in_stock} onClick={() => addToCart(product, quantity)}>
                 <ShoppingCart className="h-4 w-4" /> Add to Cart
               </Button>
             </div>
+            <Button size="lg" className="w-full gap-2 font-body" disabled={!product.in_stock} onClick={handleBuyNow}>
+              <Zap className="h-4 w-4" /> Buy Now
+            </Button>
 
             {product.tags && product.tags.length > 0 && (
               <div className="flex gap-2 pt-2">
