@@ -10,6 +10,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const { addToCart } = useCart();
   const navigate = useNavigate();
 
   const discount = product.original_price
