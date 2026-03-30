@@ -55,36 +55,37 @@ const Header = () => {
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <Search className="h-4 w-4" />
-          </Button>
-          {user ? (
-            <>
-              <Link to="/admin">
-                <Button variant="ghost" size="sm" className="hidden md:inline-flex text-xs">
-                  Admin
-                </Button>
-              </Link>
-              <Button variant="ghost" size="icon" onClick={() => signOut()} title="Sign out">
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </>
-          ) : (
-            <Link to="/login">
-              <Button variant="ghost" size="icon">
-                <User className="h-4 w-4" />
-              </Button>
-            </Link>
-          )}
+        <div className="flex items-center gap-1 md:gap-2">
           <Link to="/cart" className="relative">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-body">
               <ShoppingCart className="h-4 w-4" />
+              <span className="hidden sm:inline">Cart</span>
               {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {totalItems}
                 </span>
               )}
+            </Button>
+          </Link>
+
+          {user ? (
+            <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-body" onClick={() => signOut()} title="Sign out">
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          ) : (
+            <Link to="/login">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-body">
+                <User className="h-4 w-4" />
+                <span className="hidden sm:inline">User Login</span>
+              </Button>
+            </Link>
+          )}
+
+          <Link to="/admin">
+            <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-body">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Admin</span>
             </Button>
           </Link>
         </div>
