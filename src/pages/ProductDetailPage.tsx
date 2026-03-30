@@ -4,7 +4,8 @@ import Layout from "@/components/layout/Layout";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { Star, Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Star, Minus, Plus, ShoppingCart, ArrowLeft, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import ProductCard from "@/components/ProductCard";
 
 const ProductDetailPage = () => {
@@ -12,8 +13,16 @@ const ProductDetailPage = () => {
   const { data: product, isLoading } = useProduct(id || "");
   const { data: allProducts = [] } = useProducts();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+
+  const handleBuyNow = () => {
+    if (product && product.in_stock) {
+      addToCart(product, quantity);
+      navigate("/checkout");
+    }
+  };
 
   if (isLoading) {
     return <Layout><div className="container py-16 text-center text-muted-foreground font-body">Loading...</div></Layout>;
@@ -98,10 +107,13 @@ const ProductDetailPage = () => {
                 <span className="w-12 text-center font-body font-medium">{quantity}</span>
                 <Button variant="ghost" size="icon" className="h-10 w-10" onClick={() => setQuantity(quantity + 1)}><Plus className="h-4 w-4" /></Button>
               </div>
-              <Button size="lg" className="flex-1 gap-2 font-body" disabled={!product.in_stock} onClick={() => addToCart(product, quantity)}>
+              <Button size="lg" className="flex-1 gap-2 font-body" variant="outline" disabled={!product.in_stock} onClick={() => addToCart(product, quantity)}>
                 <ShoppingCart className="h-4 w-4" /> Add to Cart
               </Button>
             </div>
+            <Button size="lg" className="w-full gap-2 font-body" disabled={!product.in_stock} onClick={handleBuyNow}>
+              <Zap className="h-4 w-4" /> Buy Now
+            </Button>
 
             {product.tags && product.tags.length > 0 && (
               <div className="flex gap-2 pt-2">

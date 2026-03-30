@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { ShoppingCart, Star } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/types/product";
 import { useCart } from "@/context/CartContext";
@@ -11,6 +11,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const discount = product.original_price
     ? Math.round(((product.original_price - product.price) / product.original_price) * 100)
@@ -66,18 +67,34 @@ const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
 
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-8 w-8"
-            onClick={(e) => {
-              e.preventDefault();
-              if (product.in_stock) addToCart(product);
-            }}
-            disabled={!product.in_stock}
-          >
-            <ShoppingCart className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex gap-1.5">
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 gap-1 text-xs h-8"
+              onClick={(e) => {
+                e.preventDefault();
+                if (product.in_stock) addToCart(product);
+              }}
+              disabled={!product.in_stock}
+            >
+              <ShoppingCart className="h-3 w-3" /> Cart
+            </Button>
+            <Button
+              size="sm"
+              className="flex-1 gap-1 text-xs h-8"
+              onClick={(e) => {
+                e.preventDefault();
+                if (product.in_stock) {
+                  addToCart(product);
+                  navigate("/checkout");
+                }
+              }}
+              disabled={!product.in_stock}
+            >
+              <Zap className="h-3 w-3" /> Buy Now
+            </Button>
+          </div>
         </div>
       </div>
     </div>
