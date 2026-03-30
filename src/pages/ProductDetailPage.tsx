@@ -13,8 +13,16 @@ const ProductDetailPage = () => {
   const { data: product, isLoading } = useProduct(id || "");
   const { data: allProducts = [] } = useProducts();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+
+  const handleBuyNow = () => {
+    if (product && product.in_stock) {
+      addToCart(product, quantity);
+      navigate("/checkout");
+    }
+  };
 
   if (isLoading) {
     return <Layout><div className="container py-16 text-center text-muted-foreground font-body">Loading...</div></Layout>;
