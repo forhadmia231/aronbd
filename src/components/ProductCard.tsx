@@ -67,18 +67,34 @@ const ProductCard = ({ product }: ProductCardProps) => {
             )}
           </div>
 
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-8 w-8"
-            onClick={(e) => {
-              e.preventDefault();
-              if (product.in_stock) addToCart(product);
-            }}
-            disabled={!product.in_stock}
-          >
-            <ShoppingCart className="h-3.5 w-3.5" />
-          </Button>
+          <div className="flex gap-1.5">
+            <Button
+              size="sm"
+              variant="outline"
+              className="flex-1 gap-1 text-xs h-8"
+              onClick={(e) => {
+                e.preventDefault();
+                if (product.in_stock) addToCart(product);
+              }}
+              disabled={!product.in_stock}
+            >
+              <ShoppingCart className="h-3 w-3" /> Cart
+            </Button>
+            <Button
+              size="sm"
+              className="flex-1 gap-1 text-xs h-8"
+              onClick={(e) => {
+                e.preventDefault();
+                if (product.in_stock) {
+                  addToCart(product);
+                  navigate("/checkout");
+                }
+              }}
+              disabled={!product.in_stock}
+            >
+              <Zap className="h-3 w-3" /> Buy Now
+            </Button>
+          </div>
         </div>
       </div>
     </div>
