@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import { useProduct, useProducts } from "@/hooks/useProducts";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { useCart } from "@/context/CartContext";
 import { Star, Minus, Plus, ShoppingCart, ArrowLeft, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "@/components/ProductCard";
+import { trackViewContent, trackAddToCart } from "@/lib/tracking";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -20,9 +21,17 @@ const ProductDetailPage = () => {
   const handleBuyNow = () => {
     if (product && product.in_stock) {
       addToCart(product, quantity);
+      trackAddToCart({ id: product.id, name: product.name, price: product.price, quantity });
       navigate("/checkout");
     }
   };
+
+  // Track ViewContent
+  useEffect(() => {
+    if (product) {
+      trackViewContent({ id: product.id, name: product.name, price: product.price });
+    }
+  }, [product?.id]);
 
   if (isLoading) {
     return <Layout><div className="container py-16 text-center text-muted-foreground font-body">Loading...</div></Layout>;

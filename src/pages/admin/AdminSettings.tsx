@@ -396,6 +396,9 @@ const AdminSettings = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Tracking Codes */}
+        <TrackingSettings settings={settings} saving={saving} onSave={handleSave} />
       </div>
     </AdminLayout>
   );
