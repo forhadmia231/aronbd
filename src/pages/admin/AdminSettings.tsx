@@ -11,6 +11,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Trash2, UserPlus, Palette, Globe, Phone, Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import TrackingSettings from "@/components/admin/TrackingSettings";
 
 const useAdminUsers = () => {
   return useQuery({
