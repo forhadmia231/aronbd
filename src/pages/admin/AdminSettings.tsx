@@ -11,6 +11,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Trash2, UserPlus, Palette, Globe, Phone, Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import TrackingSettings from "@/components/admin/TrackingSettings";
 
 const useAdminUsers = () => {
   return useQuery({
@@ -395,6 +396,9 @@ const AdminSettings = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Tracking Codes */}
+        <TrackingSettings settings={settings} saving={saving} onSave={handleSave} />
       </div>
     </AdminLayout>
   );
