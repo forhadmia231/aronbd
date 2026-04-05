@@ -14,12 +14,14 @@ interface TrackingSettingsProps {
 const TrackingSettings = ({ settings, saving, onSave }: TrackingSettingsProps) => {
   const [metaPixelId, setMetaPixelId] = useState("");
   const [gtmContainerId, setGtmContainerId] = useState("");
+  const [ga4MeasurementId, setGa4MeasurementId] = useState("");
   const [metaAccessToken, setMetaAccessToken] = useState("");
 
   useEffect(() => {
     if (settings) {
       setMetaPixelId(settings.meta_pixel_id || "");
       setGtmContainerId(settings.gtm_container_id || "");
+      setGa4MeasurementId(settings.ga4_measurement_id || "");
       setMetaAccessToken(settings.meta_access_token || "");
     }
   }, [settings]);
@@ -55,11 +57,23 @@ const TrackingSettings = ({ settings, saving, onSave }: TrackingSettingsProps) =
               Find your Container ID in GTM → Admin → Container Settings
             </p>
           </div>
+          <div>
+            <Label>Google Analytics 4 Measurement ID</Label>
+            <Input
+              value={ga4MeasurementId}
+              onChange={(e) => setGa4MeasurementId(e.target.value)}
+              placeholder="e.g. G-XXXXXXXXXX"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Find in GA4 → Admin → Data Streams → your stream → Measurement ID
+            </p>
+          </div>
           <Button
             onClick={() =>
               onSave("Tracking Codes", [
                 { key: "meta_pixel_id", value: metaPixelId },
                 { key: "gtm_container_id", value: gtmContainerId },
+                { key: "ga4_measurement_id", value: ga4MeasurementId },
               ])
             }
             disabled={saving}
