@@ -17,6 +17,7 @@ import AdminProducts from "./pages/admin/AdminProducts.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminOrders from "./pages/admin/AdminOrders.tsx";
 import AdminSettings from "./pages/admin/AdminSettings.tsx";
+import TrackingScripts from "./components/TrackingScripts";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <TrackingScripts />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/products" element={<ProductsPage />} />
