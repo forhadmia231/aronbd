@@ -9,6 +9,7 @@ const TrackingScripts = () => {
 
   const pixelId = settings?.meta_pixel_id || "";
   const gtmId = settings?.gtm_container_id || "";
+  const ga4Id = settings?.ga4_measurement_id || "";
 
   // Inject Meta Pixel
   useEffect(() => {
@@ -74,6 +75,33 @@ const TrackingScripts = () => {
       document.getElementById("gtm-body-noscript")?.remove();
     };
   }, [gtmId]);
+
+  // Inject GA4
+  useEffect(() => {
+    if (!ga4Id) return;
+    if (document.getElementById("ga4-script")) return;
+
+    const gtagScript = document.createElement("script");
+    gtagScript.id = "ga4-script";
+    gtagScript.async = true;
+    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${ga4Id}`;
+    document.head.appendChild(gtagScript);
+
+    const initScript = document.createElement("script");
+    initScript.id = "ga4-init-script";
+    initScript.innerHTML = `
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '${ga4Id}');
+    `;
+    document.head.appendChild(initScript);
+
+    return () => {
+      document.getElementById("ga4-script")?.remove();
+      document.getElementById("ga4-init-script")?.remove();
+    };
+  }, [ga4Id]);
 
   // Track page views on route change
   useEffect(() => {

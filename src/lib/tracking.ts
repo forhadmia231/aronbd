@@ -7,6 +7,7 @@ declare global {
   interface Window {
     fbq: (...args: any[]) => void;
     dataLayer: any[];
+    gtag: (...args: any[]) => void;
   }
 }
 
@@ -42,6 +43,35 @@ const firePixelEvent = (eventName: string, data: TrackingEventData, eventId: str
       order_id: data.order_id,
     }, { eventID: eventId });
   }
+};
+
+// Fire GA4 event via gtag
+const fireGA4Event = (eventName: string, data: TrackingEventData) => {
+  if (typeof window.gtag !== "function") return;
+
+  // Map to GA4 ecommerce event names
+  const ga4EventMap: Record<string, string> = {
+    PageView: "page_view",
+    ViewContent: "view_item",
+    AddToCart: "add_to_cart",
+    InitiateCheckout: "begin_checkout",
+    Purchase: "purchase",
+  };
+
+  const ga4Event = ga4EventMap[eventName] || eventName;
+  const items = (data.contents || []).map((c) => ({
+    item_id: c.id,
+    item_name: data.content_name || c.id,
+    price: c.item_price,
+    quantity: c.quantity,
+  }));
+
+  window.gtag("event", ga4Event, {
+    currency: data.currency || "BDT",
+    value: data.value,
+    items: items.length > 0 ? items : undefined,
+    transaction_id: data.order_id,
+  });
 };
 
 // Push to GTM dataLayer
@@ -111,6 +141,7 @@ export const trackEvent = (
 
   // Browser-side
   firePixelEvent(eventName, data, eventId);
+  fireGA4Event(eventName, data);
   pushToDataLayer(eventName, data, eventId);
 
   // Server-side (for key conversion events)
