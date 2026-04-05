@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/layout/Layout";
 import { useCart } from "@/context/CartContext";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { trackInitiateCheckout, trackPurchase } from "@/lib/tracking";
 
 const CheckoutPage = () => {
   const { items, totalPrice, clearCart } = useCart();
@@ -25,6 +26,16 @@ const CheckoutPage = () => {
 
   const shipping = totalPrice >= 3000 ? 0 : 100;
   const total = totalPrice + shipping;
+
+  // Track InitiateCheckout on mount
+  useEffect(() => {
+    if (items.length > 0) {
+      trackInitiateCheckout(
+        items.map(({ product, quantity }) => ({ id: product.id, name: product.name, price: product.price, quantity })),
+        totalPrice
+      );
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +92,16 @@ const CheckoutPage = () => {
       setSubmitting(false);
       return;
     }
+
+    // Track Purchase event (browser + server-side)
+    trackPurchase({
+      orderId: order.id,
+      items: items.map(({ product, quantity }) => ({ id: product.id, name: product.name, price: product.price, quantity })),
+      totalValue: total,
+      customerName: formData.fullName,
+      customerEmail: user.email,
+      customerPhone: formData.phone,
+    });
 
     toast.success("Order placed successfully! Thank you for shopping with us.");
     clearCart();

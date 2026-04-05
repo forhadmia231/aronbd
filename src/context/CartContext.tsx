@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { CartItem, Product } from "@/types/product";
 import { toast } from "sonner";
+import { trackAddToCart } from "@/lib/tracking";
 
 interface CartContextType {
   items: CartItem[];
@@ -29,6 +30,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       return [...prev, { product, quantity }];
     });
+    trackAddToCart({ id: product.id, name: product.name, price: product.price, quantity });
     toast.success(`${product.name} added to cart`);
   }, []);
 
