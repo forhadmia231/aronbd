@@ -17,6 +17,7 @@ import AdminProducts from "./pages/admin/AdminProducts.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminOrders from "./pages/admin/AdminOrders.tsx";
 import AdminSettings from "./pages/admin/AdminSettings.tsx";
+import AdminContent from "./pages/admin/AdminContent.tsx";
 import TrackingScripts from "./components/TrackingScripts";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/admin/categories" element={<AdminCategories />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/settings" element={<AdminSettings />} />
+            <Route path="/admin/content" element={<AdminContent />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useSiteSettings } from "@/hooks/useAdmin";
+import { usePageContent } from "@/hooks/usePageContent";
 import { useState } from "react";
 
 const navLinks = [
@@ -18,6 +19,7 @@ const Header = () => {
   const { totalItems } = useCart();
   const { user, signOut } = useAuth();
   const { data: settings } = useSiteSettings();
+  const { data: content } = usePageContent("global", "header");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const headerBg = settings?.header_bg_color
@@ -26,26 +28,19 @@ const Header = () => {
 
   const logoText = settings?.logo_text || "aronbd.com";
   const logoUrl = settings?.header_logo_url;
+  const topBarText = content?.["header.top_bar_text"] || "Free shipping on orders over ৳3,000 | Use code ARON10 for 10% off";
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur border-b" style={headerBg}>
-      {/* Top bar */}
       <div className="bg-primary text-primary-foreground text-xs py-1.5 text-center font-body tracking-wide">
-        Free shipping on orders over ৳3,000 | Use code <span className="font-semibold">ARON10</span> for 10% off
+        {topBarText}
       </div>
 
       <div className="container flex items-center justify-between h-16">
-        {/* Mobile menu toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
           {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
 
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           {logoUrl ? (
             <img src={logoUrl} alt={logoText} className="h-8 md:h-10 object-contain" />
@@ -56,20 +51,14 @@ const Header = () => {
           )}
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.to}
-              className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors"
-            >
+            <Link key={link.label} to={link.to} className="text-sm font-body text-muted-foreground hover:text-foreground transition-colors">
               {link.label}
             </Link>
           ))}
         </nav>
 
-        {/* Actions */}
         <div className="flex items-center gap-1 md:gap-2">
           <Link to="/cart" className="relative">
             <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-body">
@@ -106,17 +95,11 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t bg-background animate-fade-in">
           <nav className="container py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className="text-sm font-body py-2 text-muted-foreground hover:text-foreground transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
+              <Link key={link.label} to={link.to} className="text-sm font-body py-2 text-muted-foreground hover:text-foreground transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 {link.label}
               </Link>
             ))}

@@ -125,6 +125,36 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          content_key: string
+          content_type: string
+          id: string
+          page: string
+          section: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          content_key: string
+          content_type?: string
+          id?: string
+          page: string
+          section: string
+          updated_at?: string
+          value?: string
+        }
+        Update: {
+          content_key?: string
+          content_type?: string
+          id?: string
+          page?: string
+          section?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category_id: string | null

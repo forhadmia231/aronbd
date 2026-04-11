@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useSiteSettings } from "@/hooks/useAdmin";
+import { usePageContent } from "@/hooks/usePageContent";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 
 const Footer = () => {
   const { data: settings } = useSiteSettings();
+  const { data: content } = usePageContent("global", "footer");
 
   const footerBg = settings?.footer_bg_color
     ? { backgroundColor: `hsl(${settings.footer_bg_color})` }
@@ -12,6 +14,9 @@ const Footer = () => {
   const phone = settings?.contact_phone || "+880 1234-567890";
   const email = settings?.contact_email || "support@aronbd.com";
   const address = settings?.contact_address || "Dhaka, Bangladesh";
+
+  const brandDesc = content?.["footer.brand_description"] || "Your trusted destination for quality products at affordable prices. Shop with confidence.";
+  const copyrightText = content?.["footer.copyright_text"] || "aronbd.com. All rights reserved.";
 
   const socialLinks = [
     { key: "facebook_url", icon: Facebook, label: "Facebook" },
@@ -24,26 +29,15 @@ const Footer = () => {
     <footer className="border-t mt-16" style={footerBg}>
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
           <div className="md:col-span-1">
             <Link to="/" className="font-display text-xl font-bold tracking-tight">
               aron<span className="text-muted-foreground font-light">bd</span>.com
             </Link>
-            <p className="text-sm text-muted-foreground mt-3 font-body leading-relaxed">
-              Your trusted destination for quality products at affordable prices. Shop with confidence.
-            </p>
-            {/* Social icons */}
+            <p className="text-sm text-muted-foreground mt-3 font-body leading-relaxed">{brandDesc}</p>
             {socialLinks.length > 0 && (
               <div className="flex gap-3 mt-4">
                 {socialLinks.map((s) => (
-                  <a
-                    key={s.key}
-                    href={settings?.[s.key]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label={s.label}
-                  >
+                  <a key={s.key} href={settings?.[s.key]} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors" aria-label={s.label}>
                     <s.icon className="h-5 w-5" />
                   </a>
                 ))}
@@ -51,7 +45,6 @@ const Footer = () => {
             )}
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-display font-semibold text-sm mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm text-muted-foreground font-body">
@@ -62,7 +55,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Customer Service */}
           <div>
             <h4 className="font-display font-semibold text-sm mb-4">Customer Service</h4>
             <ul className="space-y-2 text-sm text-muted-foreground font-body">
@@ -73,7 +65,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="font-display font-semibold text-sm mb-4">Contact</h4>
             <ul className="space-y-2 text-sm text-muted-foreground font-body">
@@ -85,7 +76,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t mt-8 pt-6 text-center text-xs text-muted-foreground font-body">
-          © {new Date().getFullYear()} aronbd.com. All rights reserved.
+          © {new Date().getFullYear()} {copyrightText}
         </div>
       </div>
     </footer>

@@ -1,16 +1,20 @@
 import { useCategories } from "@/hooks/useProducts";
+import { usePageContent } from "@/hooks/usePageContent";
 import { Link } from "react-router-dom";
 
 const CategoryGrid = () => {
   const { data: categories = [], isLoading } = useCategories();
+  const { data: content } = usePageContent("home", "categories");
+
+  const c = (key: string, fallback: string) => content?.[`categories.${key}`] || fallback;
 
   if (isLoading) return <div className="container py-12 text-center text-muted-foreground font-body">Loading categories...</div>;
 
   return (
     <section className="container py-12">
       <div className="text-center mb-8">
-        <h2 className="font-display text-2xl md:text-3xl font-bold">Shop by Category</h2>
-        <p className="text-muted-foreground font-body text-sm mt-2">Browse our wide range of product categories</p>
+        <h2 className="font-display text-2xl md:text-3xl font-bold">{c("title", "Shop by Category")}</h2>
+        <p className="text-muted-foreground font-body text-sm mt-2">{c("subtitle", "Browse our wide range of product categories")}</p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {categories.map((cat) => (
