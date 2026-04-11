@@ -1,4 +1,4 @@
-import { Package, ShoppingBag, Settings, LayoutDashboard, Tags } from "lucide-react";
+import { Package, ShoppingBag, Settings, LayoutDashboard, Tags, FileText } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
@@ -18,6 +18,7 @@ const items = [
   { title: "Products", url: "/admin/products", icon: Package },
   { title: "Categories", url: "/admin/categories", icon: Tags },
   { title: "Orders", url: "/admin/orders", icon: ShoppingBag },
+  { title: "Content", url: "/admin/content", icon: FileText },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
